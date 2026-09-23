@@ -176,6 +176,19 @@ h1,h2,h3{margin:0;font-weight:700}
 .modal input:focus{outline:none;border-color:var(--green)}
 .modal .bprim{width:100%;margin-top:14px;padding:15px}
 
+/* ── 첫 안내 팝업 ── */
+.wmodal{max-width:460px;padding:28px 20px 22px}
+.wmodal .big{font-size:52px;line-height:1}
+.wmodal h2{font-size:27px;margin:10px 0 4px}
+.wsteps{display:flex;flex-direction:column;gap:11px;margin:18px 0 4px;text-align:left}
+.wstep{border-radius:16px;padding:14px 16px;font-size:19.5px;font-weight:500;line-height:1.5}
+.wstep.w0{background:var(--green-soft);color:var(--green-deep)}
+.wstep.w1{background:var(--gold-soft);color:var(--gold-deep)}
+.wstep.w2{background:var(--pink-soft);color:var(--pink-deep)}
+.wstep.w3{background:var(--blue-soft);color:var(--blue-deep)}
+.wstep.w4{background:var(--purple-soft);color:#5C3792}
+.again{width:100%;margin-top:11px;font-size:16px;color:var(--sub);padding:8px;text-align:center;font-weight:500}
+
 /* ── admin ── */
 .adm .row{display:flex;gap:9px;flex-wrap:wrap;padding:14px 16px;border-bottom:2px dashed var(--line);align-items:center}
 .adm .row:last-child{border-bottom:none}
@@ -251,6 +264,7 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
       <button class="btn c2" data-go="teams"><b>💛</b>마음 보내기</button>
       <button class="btn c3" data-go="voice"><b>🗣️</b>한마디 보내기</button>
     </div>
+    <button class="again" id="btn-welcome">📌 처음 안내 다시 보기</button>
 
     <section class="sec">
       <div class="st"><h3>오늘의 흐름</h3></div>
@@ -394,6 +408,16 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
     <p>어떻게 불러드리면 될까요? (별명도 좋아요)</p>
     <input id="ob-name" maxlength="12" placeholder="이름 또는 별명">
     <button class="bprim" id="btn-ob">입장하기 🎉</button>
+  </div>
+</div>
+
+<!-- ══ 첫 안내 팝업 ══ -->
+<div class="veil" id="welcome" hidden>
+  <div class="modal wmodal">
+    <div class="big">🎉</div>
+    <h2 id="w-title"></h2>
+    <div class="wsteps" id="w-steps"></div>
+    <button class="bprim" id="btn-w-ok">네, 알겠어요!</button>
   </div>
 </div>
 
@@ -744,6 +768,27 @@ function renderAll(){
   if(curTab==='admin') renderAdmin();
 }
 
+/* ═════════ 첫 안내 팝업 ═════════ */
+const DEF_WTITLE = '이렇게 즐기시면 돼요!';
+const DEF_WLINES = '🍽️ 17:10부터 뷔페에서 저녁 식사를 하세요|🧺 식사 후엔 부스 7곳을 돌며 스탬프를 모아요|💛 마음에 남는 소모임에 응원과 마음을 보내요|🪑 17:55엔 자리에 앉아 공연과 발표를 즐겨요';
+function welcomeData(){
+  return {
+    title: (S && S.welcomeTitle) || DEF_WTITLE,
+    lines: ((S && S.welcomeLines) || DEF_WLINES).split('|').map(x=>x.trim()).filter(Boolean),
+    on: !(S && String(S.welcomeOn)==='0')
+  };
+}
+function wHash(w){ let h=0; const s=w.title+w.lines.join('|');
+  for(const c of s) h=(h*31+c.charCodeAt(0))>>>0; return 'wseen'+h; }
+function showWelcome(force){
+  if(document.body.classList.contains('screen-mode')) return;
+  const w = welcomeData(); if(!w.on) return;
+  if(!force && ls(wHash(w))) return;
+  $('#w-title').textContent = w.title;
+  $('#w-steps').innerHTML = w.lines.map((l,i)=>`<div class="wstep w${i%5}">${esc(l)}</div>`).join('');
+  $('#welcome').hidden = false;
+}
+
 /* ═════════ 액션 ═════════ */
 function needName(){ if(ME.name) return false; $('#onboard').hidden=false; return true; }
 function switchTab(t){
@@ -761,8 +806,11 @@ document.addEventListener('click', async e=>{
     const n=$('#ob-name').value.trim(); if(!n) return toast('이름이나 별명을 알려주세요');
     ME.name=n; ls('name',n); $('#onboard').hidden=true;
     await api({action:'register',uid:ME.uid,name:n});
-    toast(n+' 선생님, 환영해요! 🌱'); return;
+    showWelcome(false);
+    return;
   }
+  if(el.id==='btn-w-ok'){ ls(wHash(welcomeData()),'1'); $('#welcome').hidden=true; return; }
+  if(el.id==='btn-welcome'){ showWelcome(true); return; }
   if(el.id==='presenting'){ if(S.presenting){ switchTab('teams'); openTeam=S.presenting; renderTeams();
     const c=$('#tm-'+S.presenting); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); } return; }
   if(el.id==='btn-code'){
@@ -877,7 +925,8 @@ async function boot(){
   applyScreenMode();
   renderAll();
   if(!ME.name && location.hash!=='#screen') $('#onboard').hidden=false;
-  else if(!DEMO) api({action:'register',uid:ME.uid,name:ME.name});
+  else if(!DEMO){ api({action:'register',uid:ME.uid,name:ME.name}); showWelcome(false); }
+  else showWelcome(false);
   if(adminCode){
     const r=await api({action:'admin',code:adminCode,op:'ping'});
     if(r.ok) $('#tab-btn-admin').hidden=false;
