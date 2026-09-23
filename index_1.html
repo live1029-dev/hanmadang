@@ -1,0 +1,892 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>2026 참실한마당</title></head><body>
+<title>2026 참실한마당</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+:root{
+  --bg:#FBF7EE; --card:#FFFFFF; --ink:#2A2620; --sub:#6E675B; --faint:#9B937F;
+  --green:#2E7D4F; --green-deep:#1D5C36; --green-soft:#E2F2E4; --green-line:#BFDFC5;
+  --gold:#DD9410; --gold-soft:#FFF3D6; --gold-line:#F2D896; --gold-deep:#8A5E12;
+  --pink:#E2688A; --pink-soft:#FDE9EF; --pink-deep:#A93A5C;
+  --blue:#4A6FD4; --blue-soft:#E9EEFC; --blue-deep:#33509F;
+  --purple:#8A5BC4; --purple-soft:#F1EAFB;
+  --teal:#1F9387; --teal-soft:#E0F4F1;
+  --line:#EBE4D2; --danger:#C24B2E;
+  --radius:16px; --shadow:0 2px 6px rgba(90,74,40,.09);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-size:20px;line-height:1.55;color-scheme:light}
+button{font-family:inherit;font-size:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea{font-family:inherit;font-size:18px;color:var(--ink)}
+h1,h2,h3{margin:0;font-weight:700}
+#app{max-width:560px;margin:0 auto;padding:0 16px 110px}
+[hidden]{display:none!important}
+
+/* ── header ── */
+.hd{display:flex;align-items:center;justify-content:space-between;padding:16px 2px 6px}
+.hd .brand b{font-size:26px;letter-spacing:-.3px;font-family:'Gowun Dodum',sans-serif;font-weight:400}
+.hd .brand b .yr{background:linear-gradient(90deg,var(--green),var(--teal));
+  -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;font-family:'Noto Sans KR',sans-serif}
+.gear{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--faint);font-size:22px}
+.gear:active{background:var(--line)}
+
+/* ── demo ribbon ── */
+.demo{background:#3A3F36;color:#F2EFE4;font-size:15px;border-radius:12px;
+  padding:10px 14px;margin:6px 0 2px;line-height:1.45}
+.demo b{color:#FFD98A;font-weight:700}
+
+/* ── notice ── */
+.notice{background:var(--gold-soft);border:1.5px solid var(--gold-line);color:var(--gold-deep);
+  border-radius:12px;padding:11px 14px;font-size:17px;margin:10px 0 0;display:flex;gap:9px;font-weight:500}
+.notice::before{content:"📢";flex:0 0 auto}
+
+/* ── phase hero ── */
+.hero{background:linear-gradient(140deg,#0E7D56 0%,#17A277 52%,#4CB85F);color:#FFFFFF;
+  border-radius:26px;padding:24px 22px 22px;margin-top:14px;
+  box-shadow:0 6px 18px rgba(23,130,90,.28);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;left:-30px;bottom:-52px;width:150px;height:150px;border-radius:50%;background:rgba(255,206,94,.22)}
+.hero::after{content:"";position:absolute;right:-36px;top:-46px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.13)}
+.hero .deco{position:absolute;right:34px;bottom:-30px;width:90px;height:90px;border-radius:50%;background:rgba(255,140,180,.18)}
+.hero .now{position:relative;z-index:1}
+.hero .now span{display:inline-block;background:rgba(255,220,120,.28);color:#FFEBB4;border:1.5px solid rgba(255,220,120,.5);
+  border-radius:99px;padding:5px 16px;font-size:16px;letter-spacing:2px;font-weight:900}
+.hero .phz{display:flex;align-items:center;gap:14px;margin:13px 0 10px;position:relative;z-index:1}
+.hero .pe{font-size:52px;line-height:1;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+.hero h2{font-size:38px;font-family:'Gowun Dodum',sans-serif;font-weight:400;
+  text-shadow:0 2px 8px rgba(10,60,40,.35);letter-spacing:-.5px;line-height:1.2}
+.hero .todo{font-size:20px;line-height:1.6;position:relative;z-index:1;color:#F2FFF4}
+.hero .clock{position:absolute;right:20px;top:22px;font-size:16px;opacity:.85;font-variant-numeric:tabular-nums;
+  background:rgba(0,0,0,.18);border-radius:99px;padding:3px 12px;z-index:1}
+.hero .live{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:rgba(0,0,0,.26);
+  border-radius:99px;padding:9px 16px;font-size:17px;position:relative;z-index:1}
+.hero .live .dot{width:9px;height:9px;border-radius:50%;background:#FFC66B;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@media(prefers-reduced-motion:reduce){.hero .live .dot{animation:none}}
+
+/* ── quick actions ── */
+.act{display:flex;gap:10px;margin-top:14px}
+.act .btn{flex:1;text-align:center;border-radius:16px;padding:14px 6px;font-size:16px;font-weight:700;
+  box-shadow:var(--shadow);border:1.5px solid transparent}
+.act .btn b{display:block;font-size:27px;margin-bottom:3px}
+.act .c1{background:var(--green-soft);border-color:var(--green-line);color:var(--green-deep)}
+.act .c2{background:var(--gold-soft);border-color:var(--gold-line);color:var(--gold-deep)}
+.act .c3{background:var(--pink-soft);border-color:#F5C4D2;color:var(--pink-deep)}
+
+/* ── sections & cards ── */
+.sec{margin-top:26px}
+.sec>.st{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.sec>.st h3{font-size:20px}
+.sec>.st h3::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
+  background:linear-gradient(135deg,var(--gold),var(--pink));margin-right:8px}
+.sec>.st .more{font-size:15.5px;color:var(--green);font-weight:700}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* timetable */
+.tt{padding:4px 0}
+.tt .row{display:flex;gap:14px;padding:11px 18px;align-items:baseline}
+.tt .row .t{flex:0 0 84px;font-variant-numeric:tabular-nums;font-size:16px;color:var(--sub);font-weight:500}
+.tt .row .n{font-size:18px}
+.tt .row.on{background:linear-gradient(90deg,var(--green-soft),#F2F9EB);border-left:5px solid var(--green)}
+.tt .row.on .n{font-weight:900;color:var(--green-deep)}
+.tt .row.past{opacity:.42}
+
+/* ── stamps ── */
+.stamp-hero{padding:20px 16px;text-align:center}
+.stamp-hero .cnt{font-size:18px;color:var(--sub)}
+.stamp-hero .cnt b{color:var(--gold);font-size:30px;font-variant-numeric:tabular-nums}
+.stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:8px 18px 18px}
+.stamp{aspect-ratio:1;border-radius:50%;border:2.5px dashed var(--line);display:grid;place-items:center;
+  align-content:center;text-align:center;font-size:15px;color:var(--faint);padding:6px;line-height:1.3;gap:2px}
+.stamp .mk{font-size:26px;display:block;line-height:1}
+.stamp.got{border-style:solid;font-weight:900;transform:rotate(-4deg)}
+.stamp.g0{border-color:var(--green);background:var(--green-soft);color:var(--green-deep)}
+.stamp.g1{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-deep)}
+.stamp.g2{border-color:var(--pink);background:var(--pink-soft);color:var(--pink-deep)}
+.stamp.g3{border-color:var(--blue);background:var(--blue-soft);color:var(--blue-deep)}
+.code-row{display:flex;gap:9px;padding:0 18px 16px}
+.code-row input{flex:1;min-width:0;border:2px solid var(--line);border-radius:14px;padding:12px 14px;
+  letter-spacing:8px;text-align:center;font-size:24px;font-variant-numeric:tabular-nums;background:#FDFCF8}
+.code-row input:focus{outline:none;border-color:var(--green)}
+.bprim{background:var(--green);color:#fff;border-radius:14px;padding:13px 20px;font-weight:700;font-size:19px}
+.bprim:disabled{opacity:.45}
+.bghost{border:2px solid var(--green-line);color:var(--green-deep);border-radius:14px;padding:11px 18px;font-weight:700;font-size:17px}
+.hint{font-size:15.5px;color:var(--faint);padding:0 18px 16px;margin:0}
+
+/* ── teams ── */
+.grp{font-size:17px;margin:22px 2px 10px;font-weight:900;letter-spacing:.3px}
+.team{margin-bottom:12px;overflow:hidden;border-left:6px solid var(--tint,var(--line))}
+.team .top{width:100%;display:flex;align-items:center;gap:13px;padding:15px 16px;text-align:left}
+.team .avatar{flex:0 0 52px;height:52px;border-radius:16px;display:grid;place-items:center;
+  font-size:28px;background:var(--tintbg,#F3F1E8)}
+.team .nm{flex:1;min-width:0}
+.team .nm b{font-size:21px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:13.5px;border-radius:8px;padding:2.5px 9px;font-weight:700;letter-spacing:.3px}
+.tag.b{background:var(--green-soft);color:var(--green-deep)}
+.tag.s{background:var(--blue-soft);color:var(--blue-deep)}
+.tag.g{background:var(--gold-soft);color:var(--gold-deep)}
+.tag.u{background:#F1EEE4;color:var(--faint)}
+.team .chev{color:var(--faint);transition:transform .18s;font-size:24px}
+.team.open .chev{transform:rotate(90deg)}
+.team .body{border-top:2px dashed var(--line);padding:15px 16px 17px}
+.team .intro{font-size:17px;color:var(--sub);margin:0 0 12px}
+.mini{font-size:15.5px;color:var(--sub);margin:12px 0 8px;font-weight:900;letter-spacing:.4px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--line);border-radius:99px;padding:8px 14px;font-size:16.5px;background:#FDFCF8;
+  transition:all .12s}
+.chip.sel{border-color:var(--gold);background:var(--gold-soft);color:var(--gold-deep);font-weight:900}
+.chip:disabled{opacity:.4}
+.chips-note{font-size:15px;color:var(--faint);margin-top:9px}
+.chips-note b{color:var(--gold)}
+
+/* cheer feed */
+.feed{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.msg{background:#FAF7EE;border-radius:0 14px 14px 14px;padding:10px 14px;font-size:17px}
+.msg .who{font-size:14.5px;color:var(--teal);font-weight:900;margin-right:7px}
+.cheer-row{display:flex;gap:9px;margin-top:12px}
+.cheer-row input{flex:1;min-width:0;border:2px solid var(--line);border-radius:14px;padding:11px 14px;background:#FDFCF8}
+.cheer-row input:focus{outline:none;border-color:var(--green)}
+.send{background:var(--green);color:#fff;border-radius:14px;padding:0 18px;font-weight:700;flex:0 0 auto;font-size:18px}
+
+/* ── voice tab ── */
+.bigin{width:100%;border:2px solid var(--line);border-radius:14px;padding:13px 15px;background:#FDFCF8;
+  min-height:104px;resize:vertical}
+.bigin:focus{outline:none;border-color:var(--green)}
+.tgl{display:flex;align-items:center;gap:10px;font-size:17px;color:var(--sub);margin:12px 0}
+.tgl input{width:22px;height:22px;accent-color:var(--green)}
+.sug{padding:13px 16px;border-bottom:2px dashed var(--line);font-size:17.5px}
+.sug:last-child{border-bottom:none}
+.sug .who{font-size:14.5px;color:var(--faint);display:block;margin-top:4px}
+
+/* wordcloud */
+.cloud{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:7px 14px;
+  padding:22px 14px;line-height:1.2}
+.cloud span{font-family:'Gowun Dodum',sans-serif;animation:pop .4s both}
+@keyframes pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.cloud span{animation:none}}
+
+/* ── onboarding ── */
+.veil{position:fixed;inset:0;background:rgba(28,36,26,.5);display:grid;place-items:center;z-index:60;padding:20px}
+.modal{background:var(--card);border-radius:24px;padding:30px 24px;max-width:420px;width:100%;text-align:center}
+.modal h2{font-size:25px;font-family:'Gowun Dodum',sans-serif;font-weight:400;margin-bottom:8px;line-height:1.4}
+.modal p{font-size:17px;color:var(--sub);margin:0 0 18px}
+.modal input{width:100%;border:2px solid var(--line);border-radius:14px;padding:14px;text-align:center;background:#FDFCF8;font-size:20px}
+.modal input:focus{outline:none;border-color:var(--green)}
+.modal .bprim{width:100%;margin-top:14px;padding:15px}
+
+/* ── admin ── */
+.adm .row{display:flex;gap:9px;flex-wrap:wrap;padding:14px 16px;border-bottom:2px dashed var(--line);align-items:center}
+.adm .row:last-child{border-bottom:none}
+.adm .lbl{flex:0 0 100%;font-size:14.5px;color:var(--faint);font-weight:900;letter-spacing:.4px}
+.pill{border:2px solid var(--line);border-radius:99px;padding:8px 15px;font-size:16px;background:#FDFCF8}
+.pill.on{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);font-weight:900}
+.stat{flex:1;min-width:86px;text-align:center;background:#FAF7EE;border-radius:12px;padding:12px 4px}
+.stat b{display:block;font-size:26px;color:var(--green-deep);font-variant-numeric:tabular-nums}
+.stat span{font-size:14px;color:var(--sub)}
+
+/* ── toast ── */
+#toast{position:fixed;left:50%;bottom:104px;transform:translateX(-50%);background:#2B3327;color:#F4F2E8;
+  border-radius:99px;padding:12px 24px;font-size:17px;z-index:70;opacity:0;pointer-events:none;
+  transition:opacity .25s, transform .25s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+
+/* ── tabbar ── */
+.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(255,253,247,.96);backdrop-filter:blur(10px);
+  border-top:1.5px solid var(--line);display:flex;z-index:50;
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;padding:10px 0 9px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  font-size:13px;color:var(--faint);font-weight:700}
+.tabs button .ic{font-size:26px;line-height:1;filter:grayscale(.9);opacity:.75}
+.tabs button.on{color:var(--green-deep)}
+.tabs button.on .ic{filter:none;opacity:1;transform:translateY(-1px)}
+
+/* ── screen mode ── */
+#screen{display:none}
+body.screen-mode{background:#131811;color:#F1EFE2}
+body.screen-mode #app,body.screen-mode .tabs{display:none}
+body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;padding:4vh 5vw;text-align:center}
+#screen .s-brand{font-family:'Gowun Dodum',sans-serif;font-size:3.2vh;color:#9DBE8F;letter-spacing:.2vh}
+#screen .s-phase{font-family:'Gowun Dodum',sans-serif;font-size:6.4vh;margin-top:1.4vh}
+#screen .s-todo{font-size:2.6vh;color:#C9CBB6;margin-top:.8vh}
+#screen .s-notice{margin:2vh auto 0;background:#3D3417;color:#FFD98A;border-radius:99px;
+  padding:1.2vh 3vh;font-size:2.4vh;max-width:90%}
+#screen .s-cloud{flex:1;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;
+  gap:1.2vh 2.6vh;padding:3vh 0;line-height:1.15}
+#screen .s-cloud span{font-family:'Gowun Dodum',sans-serif;animation:pop .5s both}
+#screen .s-award{flex:1;display:flex;flex-direction:column;justify-content:center;gap:1.2vh}
+#screen .s-award .aw{font-size:3.4vh}
+#screen .s-award .aw b{color:#FFD98A;font-family:'Gowun Dodum',sans-serif;font-weight:400}
+#screen .s-foot{font-size:1.9vh;color:#6E7A64}
+</style>
+<div id="app">
+  <header class="hd">
+    <div class="brand">
+      <b><span class="yr">2026</span> 참실한마당</b>
+    </div>
+    <button class="gear" id="btn-gear" aria-label="설정">⚙︎</button>
+  </header>
+
+  <div class="demo" id="demo-ribbon" hidden>
+    <b>미리보기 모드</b> · 데모예요. 운영자 코드: 1234
+  </div>
+  <div class="notice" id="notice" hidden></div>
+
+  <!-- ══ 홈 ══ -->
+  <main id="tab-home">
+    <section class="hero" id="hero">
+      <div class="deco"></div>
+      <div class="clock" id="clock"></div>
+      <div class="now"><span>✨ 지금은</span></div>
+      <div class="phz"><span class="pe" id="phase-emoji">✨</span><h2 id="phase-title">…</h2></div>
+      <div class="todo" id="phase-todo"></div>
+      <button class="live" id="presenting" hidden>
+        <span class="dot"></span><span id="presenting-txt"></span>
+      </button>
+    </section>
+
+    <div class="act">
+      <button class="btn c1" data-go="stamp"><b>🎯</b>부스 스탬프</button>
+      <button class="btn c2" data-go="teams"><b>💛</b>마음 보내기</button>
+      <button class="btn c3" data-go="voice"><b>🗣️</b>한마디 보내기</button>
+    </div>
+
+    <section class="sec">
+      <div class="st"><h3>오늘의 흐름</h3></div>
+      <div class="card tt" id="timetable"></div>
+    </section>
+
+    <section class="sec">
+      <div class="st"><h3>발표·공연 순서</h3></div>
+      <div class="card tt" id="stagelist"></div>
+    </section>
+  </main>
+
+  <!-- ══ 스탬프 ══ -->
+  <main id="tab-stamp" hidden>
+    <section class="card stamp-hero" style="margin-top:12px">
+      <h3 class="disp" style="font-size:19px">부스 스탬프 투어</h3>
+      <p class="cnt" style="margin:6px 0 0">지금까지 <b id="stamp-cnt">0</b> / <span id="stamp-total">7</span>개</p>
+      <p class="hint" style="padding:6px 0 0" id="stamp-cheer-line">부스 팻말의 4자리 코드를 입력하면 도장이 쾅!</p>
+    </section>
+    <section class="card" style="margin-top:12px">
+      <div class="stamps" id="stamp-grid" style="padding-top:16px"></div>
+      <div class="code-row">
+        <input id="code-in" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off">
+        <button class="bprim" id="btn-code">도장 찍기</button>
+      </div>
+      <p class="hint">다 못 돌아도 괜찮아요. 만나는 것 자체가 오늘의 의미니까요 🙂</p>
+    </section>
+  </main>
+
+  <!-- ══ 소모임 ══ -->
+  <main id="tab-teams" hidden>
+    <div id="teams-list"></div>
+  </main>
+
+  <!-- ══ 한마디 ══ -->
+  <main id="tab-voice" hidden>
+    <section class="sec" style="margin-top:14px">
+      <div class="st"><h3>내년 전교조에 바란다</h3></div>
+      <div class="card" style="padding:14px 15px">
+        <textarea class="bigin" id="sug-in" placeholder="내년엔 이런 활동·지원이 있으면 좋겠어요 …"></textarea>
+        <label class="tgl"><input type="checkbox" id="sug-anon"> 익명으로 보내기</label>
+        <button class="bprim" style="width:100%" id="btn-sug">보내기</button>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="st"><h3>오늘 우리가 나눈 말들</h3>
+        <button class="more" id="btn-refresh-cloud">새로고침</button></div>
+      <div class="card"><div class="cloud" id="cloud"></div></div>
+    </section>
+    <section class="sec">
+      <div class="st"><h3>도착한 한마디</h3></div>
+      <div class="card" id="sug-list"></div>
+    </section>
+  </main>
+
+  <!-- ══ 운영자 ══ -->
+  <main id="tab-admin" hidden>
+    <section class="sec" style="margin-top:14px" id="adm-login-sec">
+      <div class="st"><h3>운영자 모드</h3></div>
+      <div class="card" style="padding:16px 15px">
+        <p style="margin:0 0 10px;font-size:13.5px;color:var(--sub)">운영자 코드를 입력하세요.</p>
+        <div class="code-row" style="padding:0">
+          <input id="adm-code" type="password" placeholder="코드" style="letter-spacing:3px">
+          <button class="bprim" id="btn-adm-login">입장</button>
+        </div>
+      </div>
+    </section>
+    <section id="adm-panel" hidden>
+      <section class="sec" style="margin-top:14px">
+        <div class="st"><h3>진행 제어</h3><span class="more" id="adm-mode-label"></span></div>
+        <div class="card adm">
+          <div class="row"><span class="lbl">현재 단계 (누르면 즉시 전환 · 수동 모드로 변경됨)</span><div id="adm-phases" style="display:flex;gap:7px;flex-wrap:wrap"></div></div>
+          <div class="row"><span class="lbl">모드</span>
+            <button class="pill" id="adm-auto">⏱ 시간표대로 자동 진행</button></div>
+          <div class="row"><span class="lbl">지금 발표 중인 팀</span><div id="adm-pres" style="display:flex;gap:7px;flex-wrap:wrap"></div></div>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="st"><h3>공지 배너</h3></div>
+        <div class="card" style="padding:13px 15px">
+          <div class="cheer-row" style="margin-top:0">
+            <input id="adm-notice" placeholder="예: 뷔페 마감 5분 전!">
+            <button class="send" id="btn-adm-notice">게시</button>
+          </div>
+          <button class="bghost" style="margin-top:9px" id="btn-adm-notice-clear">공지 내리기</button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="st"><h3>마음 보내기</h3></div>
+        <div class="card adm"><div class="row">
+          <button class="pill" id="adm-hearts">마감하기</button>
+          <span style="font-size:12.5px;color:var(--faint)">마감하면 팀별 대표 문구가 확정되고 스크린에 표시돼요.</span>
+        </div></div>
+      </section>
+      <section class="sec">
+        <div class="st"><h3>참여 현황</h3><button class="more" id="btn-adm-refresh">새로고침</button></div>
+        <div class="card adm"><div class="row" id="adm-stats"></div></div>
+        <div class="card adm" style="margin-top:10px"><div class="row" style="flex-direction:column;align-items:stretch" id="adm-board"></div></div>
+      </section>
+      <section class="sec">
+        <div class="st"><h3>스크린 모드</h3></div>
+        <div class="card" style="padding:13px 15px;font-size:13.5px;color:var(--sub)">
+          빔프로젝터에 연결한 노트북에서 이 페이지를 열고 주소 끝에 <b style="color:var(--ink)">#screen</b>을 붙여 새로고침하세요.
+          <button class="bghost" style="margin-top:9px;width:100%" id="btn-screen">이 기기에서 스크린 모드 열기</button>
+        </div>
+      </section>
+      <section class="sec">
+        <div class="st"><h3>운영자 로그아웃</h3></div>
+        <div class="card" style="padding:13px 15px">
+          <button class="bghost" style="width:100%;color:var(--danger);border-color:#E8C4B5" id="btn-adm-logout">이 기기에서 운영자 모드 끄기</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button data-tab="home" class="on"><span class="ic">🏠</span>홈</button>
+    <button data-tab="stamp"><span class="ic">🎯</span>스탬프</button>
+    <button data-tab="teams"><span class="ic">💛</span>소모임</button>
+    <button data-tab="voice"><span class="ic">🗣</span>한마디</button>
+    <button data-tab="admin" id="tab-btn-admin" hidden><span class="ic">🛠️</span>운영</button>
+  </nav>
+</div>
+
+<!-- ══ 스크린 모드 ══ -->
+<div id="screen">
+  <div class="s-brand">2026 참실한마당</div>
+  <div class="s-phase" id="s-phase"></div>
+  <div class="s-todo" id="s-todo"></div>
+  <div class="s-notice" id="s-notice" hidden></div>
+  <div class="s-cloud" id="s-cloud"></div>
+  <div class="s-award" id="s-award" hidden></div>
+  <div class="s-foot">응원 메시지와 한마디가 실시간으로 모여 이 화면을 채웁니다</div>
+</div>
+
+<!-- ══ 온보딩 ══ -->
+<div class="veil" id="onboard" hidden>
+  <div class="modal">
+    <div style="font-size:34px">🌱</div>
+    <h2>2026 참실한마당에<br>오신 것을 환영해요</h2>
+    <p>어떻게 불러드리면 될까요? (별명도 좋아요)</p>
+    <input id="ob-name" maxlength="12" placeholder="이름 또는 별명">
+    <button class="bprim" id="btn-ob">입장하기 🎉</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script>
+/* ═════════ 설정 ═════════
+   배포 시 API_URL에 앱스스크립트 웹앱 주소(/exec)를 붙여넣으세요.
+   비워두면 서버 없이 동작하는 '미리보기(데모) 모드'로 실행됩니다. */
+const CONFIG = {
+  API_URL: "https://script.google.com/macros/s/AKfycbwj9Ip50P39XDwYGpTdvSDEoE7dQn-cXb0BYDKs5q9hYgJLEpomt_BdOzbatk8m0Daa/exec",
+  POLL_MS: 12000,
+  MAX_CHIPS_PER_TEAM: 3
+};
+const DEMO = !CONFIG.API_URL;
+
+/* ═════════ 유틸 ═════════ */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){return null} }
+function esc(s){ return String(s??'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let toastT;
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+function uidGen(){ return 'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+const AV_COLORS=['#2F7A45','#C8871E','#3B4E8F','#8F5B3B','#5B7A2F','#7A2F55','#2F6E7A','#6B5BAA'];
+function avColor(name){ let h=0; for(const c of name) h=(h*31+c.charCodeAt(0))>>>0; return AV_COLORS[h%AV_COLORS.length]; }
+const TINTS=[['#2E7D4F','#E2F2E4'],['#DD9410','#FFF3D6'],['#E2688A','#FDE9EF'],['#4A6FD4','#E9EEFC'],['#8A5BC4','#F1EAFB'],['#1F9387','#E0F4F1']];
+function tintOf(id){ let h=0; for(const c of id) h=(h*31+c.charCodeAt(0))>>>0; return TINTS[h%TINTS.length]; }
+function iconOf(t){ return t.icon || '🌱'; }
+function pad2(n){ return String(n).padStart(2,'0'); }
+
+/* ═════════ 데모 시계 (행사 당일 17:42로 시작) ═════════ */
+const _loadAt = Date.now();
+function now(){
+  if(!DEMO) return new Date();
+  const base = new Date(2026,10,5,17,42,0).getTime();
+  return new Date(base + (Date.now()-_loadAt));
+}
+function nowMin(){ const d=now(); return d.getHours()*60+d.getMinutes(); }
+function toMin(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
+
+/* ═════════ 상태 ═════════ */
+let S = null;           // 서버 상태
+let ME = { uid: ls('uid') || uidGen(), name: ls('name') || '' };
+ls('uid', ME.uid);
+let adminCode = ls('admCode') || '';
+let curTab = 'home';
+let openTeam = null;
+
+/* ═════════ 데모 데이터 ═════════ */
+const DEMO_DB = {
+  app:'2026 참실한마당', notice:'', mode:'auto', manualPhase:'', presenting:'',
+  heartsClosed:false, photoUrl:'',
+  chips:['나도 들어가고 싶어요','내년에 같이해요','배우고 싶어요','따라해보고 싶어요','새로운 걸 알아갔어요','덕분에 힘이 났어요','감동받았어요','내년에도 계속해주세요','꾸준함이 대단해요','정성이 느껴져요','웃음이 터졌어요','오늘 제일 재밌었어요'],
+  phases:[
+    {id:'p0',time:'16:50',title:'입장·접수',todo:'환영합니다! 이름을 등록하고 편한 자리에 앉아주세요.'},
+    {id:'p1',time:'17:10',title:'뷔페 식사',todo:'비건 뷔페가 열렸어요. 든든하게 식사부터 하세요!'},
+    {id:'p2',time:'17:30',title:'부스타임',todo:'부스 7곳을 돌며 코드를 입력해 보세요. 응원 한마디와 마음 보내기도 잊지 마세요.'},
+    {id:'p3',time:'17:55',title:'착석',todo:'음료만 들고 자리로! 곧 공연이 시작됩니다.'},
+    {id:'p4',time:'18:00',title:'윤슬 국악 공연',todo:'윤슬의 국악 공연을 함께 즐겨요 🎵'},
+    {id:'p5',time:'18:10',title:'소모임 발표',todo:'지금 발표 중인 팀에게 응원을 보내보세요.'},
+    {id:'p6',time:'18:50',title:'마음 보내기 마감 임박',todo:'아직 못 보낸 마음이 있다면 지금이 마지막 기회예요!'},
+    {id:'p7',time:'19:00',title:'시상·단체사진·클로징',todo:'시상식, 그리고 다 같이 단체사진 📸'},
+    {id:'p8',time:'19:20',title:'행사 종료',todo:'함께해주셔서 고맙습니다. 오늘의 기록을 둘러보세요.'}
+  ],
+  teams:[
+    {id:'b1',name:'비폭력',leader:'김상미',kind:'booth',icon:'🕊️',intro:'',loc:'창가 1번 부스',code:'4821'},
+    {id:'b2',name:'다정다감',leader:'남지현',kind:'booth',icon:'🌷',intro:'',loc:'창가 2번 부스',code:'7359'},
+    {id:'b3',name:'불러소득',leader:'박소리',kind:'booth',icon:'🎤',intro:'',loc:'창가 3번 부스',code:'1647'},
+    {id:'b4',name:'인생게임',leader:'박인순',kind:'booth',icon:'🎡',intro:'',loc:'뒷벽 4번 부스',code:'9273'},
+    {id:'b5',name:'다독다독',leader:'이민지',kind:'booth',icon:'📚',intro:'',loc:'뒷벽 5번 부스',code:'5068'},
+    {id:'b6',name:'독립문화',leader:'이희숙',kind:'booth',icon:'🎬',intro:'',loc:'뒷벽 6번 부스',code:'3914'},
+    {id:'b7',name:'다이스업',leader:'최우혁',kind:'booth',icon:'🎲',intro:'',loc:'입구 7번 부스',code:'6482'},
+    {id:'s1',name:'윤슬',leader:'김보름',kind:'perf',icon:'🎶',intro:'',order:0},
+    {id:'s2',name:'협동',leader:'김미영',kind:'stage',icon:'🤝',intro:'',order:1},
+    {id:'s3',name:'한밭역사',leader:'박건형',kind:'stage',icon:'🏛️',intro:'',order:2},
+    {id:'s4',name:'참뫼',leader:'송치수',kind:'stage',icon:'⛰️',intro:'',order:3},
+    {id:'s5',name:'대세페미',leader:'유소현',kind:'stage',icon:'💜',intro:'',order:4},
+    {id:'s6',name:'슬기복용',leader:'이재준',kind:'stage',icon:'💊',intro:'',order:5},
+    {id:'s7',name:'삼인행',leader:'최성은',kind:'stage',icon:'👣',intro:'',order:6},
+    {id:'s8',name:'바이브코딩',leader:'김효정',kind:'stage',icon:'💻',intro:'',order:7},
+    {id:'s9',name:'6학년',leader:'백혜진',kind:'stage',icon:'✏️',intro:'',order:8},
+    {id:'u1',name:'유치원',leader:'김보경',kind:'tbd',icon:'🧸',intro:''},
+    {id:'u2',name:'열광',leader:'김현희',kind:'tbd',icon:'🔥',intro:''},
+    {id:'u3',name:'세잎도란',leader:'김효정',kind:'tbd',icon:'🍀',intro:''},
+    {id:'u4',name:'전민책',leader:'안선영',kind:'tbd',icon:'📖',intro:''}
+  ],
+  cheers:[
+    {team:'b1',name:'하늘샘',text:'교실에서 바로 써볼게요, 고마워요!'},
+    {team:'b1',name:'민들레',text:'대화가 이렇게 따뜻할 수 있군요'},
+    {team:'b5',name:'책벌레',text:'추천해주신 책 다 읽어볼게요'},
+    {team:'b5',name:'초록칠판',text:'독서모임 부러워요, 내년에 같이해요'},
+    {team:'b4',name:'주사위',text:'게임 너무 재밌어요! 아이들이 좋아하겠어요'},
+    {team:'b7',name:'별똥별',text:'보드게임으로 수업이 살아나겠어요'},
+    {team:'s1',name:'솔바람',text:'연습 소리만 들었는데 벌써 기대돼요'},
+    {team:'s1',name:'가을하늘',text:'국악 공연 최고! 가슴이 웅장해져요'},
+    {team:'s8',name:'디버깅중',text:'수업에 AI 쓰는 법 배우고 싶어요'},
+    {team:'s5',name:'들꽃',text:'용기 있는 이야기 고마워요'},
+    {team:'s3',name:'대전토박이',text:'우리 동네 역사가 이렇게 재밌다니'},
+    {team:'b2',name:'다정한사람',text:'이름처럼 따뜻한 부스였어요'},
+    {team:'s9',name:'육학년담임',text:'동지를 만났습니다… 내년에 함께해요'},
+    {team:'b3',name:'음치탈출',text:'노래로 모은 마음, 멋져요'}
+  ],
+  sugs:[
+    {name:'초록칠판',text:'소모임 지원 예산을 조금 더 늘려주세요!'},
+    {name:'',text:'신규 선생님들을 위한 소모임 매칭 데이가 있으면 좋겠어요'},
+    {name:'들꽃',text:'이런 한마당 1년에 두 번 해요 우리'},
+    {name:'',text:'지역별 소모임 교류전도 해보면 어떨까요'},
+    {name:'솔바람',text:'내년엔 야외에서! 운동장 축제 어때요'}
+  ],
+  hearts:{},   // uid → {teamId:[phrases]}
+  stamps:{},   // uid → [teamId]
+  users:{}     // uid → name
+};
+/* 데모 마음 시드 (문구 구름·대표 문구 미리보기용) */
+(function(){
+  const seed=[['b1',['배우고 싶어요','정성이 느껴져요']],['b5',['따라해보고 싶어요','나도 들어가고 싶어요']],
+    ['s1',['감동받았어요']],['b4',['오늘 제일 재밌었어요','웃음이 터졌어요']],['s8',['배우고 싶어요']]];
+  for(let i=0;i<9;i++){ const u='seed'+i; DEMO_DB.hearts[u]={};
+    seed.forEach(([t,ph],j)=>{ if((i+j)%2===0) DEMO_DB.hearts[u][t]=ph; }); }
+})();
+
+/* ═════════ API ═════════ */
+function demoState(){
+  const my = { stamps: DEMO_DB.stamps[ME.uid]||[], hearts: DEMO_DB.hearts[ME.uid]||{} };
+  return JSON.parse(JSON.stringify({ ...DEMO_DB, code:undefined,
+    teams: DEMO_DB.teams.map(({code,...t})=>t), me:my, board: boardFrom(DEMO_DB.hearts) }));
+}
+function boardFrom(hearts){
+  const b={}; Object.values(hearts).forEach(m=>Object.entries(m).forEach(([t,ps])=>{
+    b[t]=b[t]||{}; ps.forEach(p=>b[t][p]=(b[t][p]||0)+1); })); return b;
+}
+async function demoApi(p){
+  await new Promise(r=>setTimeout(r,150));
+  if(p.action==='register'){ DEMO_DB.users[p.uid]=p.name; return {ok:true}; }
+  if(p.action==='stamp'){
+    const t = DEMO_DB.teams.find(x=>x.code===p.code);
+    if(!t) return {ok:false,err:'wrong'};
+    const arr = DEMO_DB.stamps[p.uid]=(DEMO_DB.stamps[p.uid]||[]);
+    if(arr.includes(t.id)) return {ok:false,err:'dup',team:t.name};
+    arr.push(t.id); return {ok:true,team:t.name};
+  }
+  if(p.action==='cheer'){ DEMO_DB.cheers.push({team:p.team,name:p.name,text:p.text}); return {ok:true}; }
+  if(p.action==='hearts'){ if(DEMO_DB.heartsClosed) return {ok:false,err:'closed'};
+    (DEMO_DB.hearts[p.uid]=DEMO_DB.hearts[p.uid]||{})[p.team]=p.phrases; return {ok:true}; }
+  if(p.action==='suggest'){ DEMO_DB.sugs.push({name:p.anon?'':p.name,text:p.text}); return {ok:true}; }
+  if(p.action==='admin'){
+    if(p.code!=='1234') return {ok:false,err:'code'};
+    if(p.op==='ping') return {ok:true};
+    if(p.op==='phase'){ if(p.value==='auto'){DEMO_DB.mode='auto';DEMO_DB.manualPhase='';}
+      else {DEMO_DB.mode='manual';DEMO_DB.manualPhase=p.value;} return {ok:true}; }
+    if(p.op==='presenting'){ DEMO_DB.presenting=p.value; return {ok:true}; }
+    if(p.op==='notice'){ DEMO_DB.notice=p.value; return {ok:true}; }
+    if(p.op==='hearts'){ DEMO_DB.heartsClosed=!!p.value; return {ok:true}; }
+    if(p.op==='dashboard'){ return {ok:true, data:{
+      users:Object.keys(DEMO_DB.users).length+37, stamps:Object.values(DEMO_DB.stamps).flat().length+52,
+      cheers:DEMO_DB.cheers.length, sugs:DEMO_DB.sugs.length,
+      heartsUsers:Object.keys(DEMO_DB.hearts).length, board:boardFrom(DEMO_DB.hearts)}};}
+  }
+  return {ok:false,err:'unknown'};
+}
+async function api(p){
+  if(DEMO) return demoApi(p);
+  try{
+    const r = await fetch(CONFIG.API_URL, {method:'POST', body: JSON.stringify(p)});
+    return await r.json();
+  }catch(e){ return {ok:false, err:'net'}; }
+}
+async function fetchState(){
+  if(DEMO){ S = demoState(); return; }
+  try{
+    const r = await fetch(CONFIG.API_URL+'?action=state&uid='+encodeURIComponent(ME.uid));
+    const j = await r.json(); if(j.ok) S = j.data;
+  }catch(e){ /* 다음 폴링에서 재시도 */ }
+}
+
+/* ═════════ 단계 계산 ═════════ */
+function currentPhase(){
+  if(!S) return null;
+  if(S.mode==='manual' && S.manualPhase){
+    return S.phases.find(p=>p.id===S.manualPhase) || S.phases[0];
+  }
+  const m = nowMin(); let cur = S.phases[0];
+  for(const p of S.phases){ if(toMin(p.time)<=m) cur=p; }
+  return cur;
+}
+
+/* ═════════ 렌더 ═════════ */
+function teamById(id){ return S.teams.find(t=>t.id===id); }
+function kindTag(t){
+  if(t.kind==='booth') return '<span class="tag b">부스</span>';
+  if(t.kind==='perf')  return '<span class="tag g">공연</span>';
+  if(t.kind==='stage') return '<span class="tag s">발표</span>';
+  return '<span class="tag u">준비 중</span>';
+}
+const PHASE_EMOJI={p0:'🚪',p1:'🍽️',p2:'🧺',p3:'🪑',p4:'🎶',p5:'🎤',p6:'💛',p7:'🏆',p8:'🌙'};
+function renderHome(){
+  const ph = currentPhase(); if(!ph) return;
+  $('#phase-title').textContent = ph.title;
+  $('#phase-emoji').textContent = PHASE_EMOJI[ph.id]||'✨';
+  $('#phase-todo').textContent = ph.todo;
+  const d = now(); $('#clock').textContent = pad2(d.getHours())+':'+pad2(d.getMinutes());
+  const pres = S.presenting && teamById(S.presenting);
+  $('#presenting').hidden = !pres;
+  if(pres) $('#presenting-txt').textContent = '지금 무대: '+pres.name+' — 응원 보내기';
+  const m = nowMin(); const curId = ph.id;
+  $('#timetable').innerHTML = S.phases.map(p=>{
+    const cls = p.id===curId?'on':(toMin(p.time)<toMin(ph.time)?'past':'');
+    return `<div class="row ${cls}"><span class="t">${p.time}</span><span class="n">${esc(p.title)}</span></div>`;
+  }).join('');
+  const stage = S.teams.filter(t=>t.kind==='stage'||t.kind==='perf').sort((a,b)=>(a.order??99)-(b.order??99));
+  $('#stagelist').innerHTML = stage.map(t=>{
+    const on = S.presenting===t.id;
+    return `<div class="row ${on?'on':''}"><span class="t">${t.kind==='perf'?'공연':(t.order+'번')}</span>
+      <span class="n">${iconOf(t)} ${esc(t.name)}${on?' ▶':''}</span></div>`;
+  }).join('');
+  $('#notice').hidden = !S.notice;
+  if(S.notice) $('#notice').textContent = S.notice;
+}
+function renderStamp(){
+  const booths = S.teams.filter(t=>t.kind==='booth');
+  const got = S.me.stamps||[];
+  $('#stamp-total').textContent = booths.length;
+  $('#stamp-cnt').textContent = got.length;
+  const lines=['부스 팻말의 4자리 코드를 입력하면 도장이 쾅!','한 곳 한 곳이 소모임의 1년이에요.',
+    '부스지기 선생님과 눈인사도 잊지 마세요 🙂','벌써 '+got.length+'개! 부스지기들이 기뻐하고 있어요.'];
+  $('#stamp-cheer-line').textContent = got.length===0?lines[0]:(got.length<3?lines[2]:lines[3]);
+  $('#stamp-grid').innerHTML = booths.map((t,i)=>{
+    const g = got.includes(t.id);
+    return `<div class="stamp ${g?('got g'+(i%4)):''}"><span class="mk">${g?iconOf(t):'❔'}</span>${esc(t.name)}</div>`;
+  }).join('');
+}
+function chipRow(t){
+  const mine = (S.me.hearts||{})[t.id]||[];
+  const closed = S.heartsClosed;
+  return `<div class="mini">💛 마음 보내기 ${closed?'<span style="color:var(--danger)">(마감됐어요)</span>':''}</div>
+    <div class="chips">${S.chips.map(c=>
+      `<button class="chip ${mine.includes(c)?'sel':''}" data-chip="${esc(c)}" data-team="${t.id}" ${closed?'disabled':''}>${esc(c)}</button>`).join('')}</div>
+    <div class="chips-note">팀마다 최대 <b>${CONFIG.MAX_CHIPS_PER_TEAM}개</b>까지, 누르면 바로 전달돼요. 모든 팀에게 보낼 수 있어요.</div>`;
+}
+function feedRow(t){
+  const list = S.cheers.filter(c=>c.team===t.id).slice(-4).reverse();
+  return `<div class="mini">📣 응원 한마디</div>
+    <div class="feed">${list.length?list.map(c=>
+      `<div class="msg"><span class="who">${esc(c.name||'누군가')}</span>${esc(c.text)}</div>`).join('')
+      :'<div class="msg" style="color:var(--faint)">첫 응원의 주인공이 되어주세요!</div>'}</div>
+    <div class="cheer-row"><input maxlength="80" placeholder="응원 한마디…" data-cheer-in="${t.id}">
+    <button class="send" data-cheer-btn="${t.id}">보내기</button></div>`;
+}
+function renderTeams(){
+  const grp = [['🧺 부스', S.teams.filter(t=>t.kind==='booth')],
+    ['🎤 발표·공연', S.teams.filter(t=>t.kind==='stage'||t.kind==='perf').sort((a,b)=>(a.order??99)-(b.order??99))],
+    ['🌱 함께하는 소모임', S.teams.filter(t=>t.kind==='tbd')]];
+  $('#teams-list').innerHTML = grp.map(([label,arr])=> arr.length?`
+    <div class="grp">${label}</div>`+arr.map(t=>{
+      const open = openTeam===t.id;
+      const [tint,tintbg] = tintOf(t.id);
+      return `<div class="card team ${open?'open':''}" id="tm-${t.id}" style="--tint:${tint};--tintbg:${tintbg}">
+        <button class="top" data-open="${t.id}">
+          <span class="avatar">${iconOf(t)}</span>
+          <span class="nm"><b>${esc(t.name)} ${kindTag(t)}</b></span>
+          <span class="chev">›</span></button>
+        ${open?`<div class="body">${t.intro?`<p class="intro">${esc(t.intro)}</p>`:''}${chipRow(t)}${feedRow(t)}</div>`:''}
+      </div>`; }).join(''):'').join('');
+}
+const CLOUD_COLORS=['#2F7A45','#C8871E','#3B4E8F','#8F5B3B','#1E5A31','#7A2F55'];
+function renderCloudInto(el, big){
+  const texts=[...S.cheers.map(c=>c.text), ...S.sugs.map(s=>s.text)];
+  const tk = tokens(texts);
+  if(!tk.length){ el.innerHTML=`<span style="color:${big?'#6E7A64':'var(--faint)'};font-size:${big?'2.4vh':'13px'}">아직 모인 말이 없어요 — 첫 마디를 남겨주세요!</span>`; return; }
+  const max = tk[0][1];
+  el.innerHTML = tk.map(([w,n],i)=>{
+    const r = n/max;
+    const size = big ? (2.2+r*5.4)+'vh' : Math.round(13+r*21)+'px';
+    const col = big ? ['#E9E6D5','#FFD98A','#9DBE8F','#D9A0C0','#8FB6BE'][i%5] : CLOUD_COLORS[i%6];
+    return `<span style="font-size:${size};color:${col};font-weight:${r>.6?700:400};animation-delay:${(i*30)}ms">${esc(w)}</span>`;
+  }).join('');
+}
+function tokens(texts){
+  const stop=new Set(['너무','정말','진짜','완전','오늘','그리고','우리','같이','함께요','있으면','좋겠어요','주세요','해주세요','합니다','했습니다','이렇게','저렇게','그렇게','있군요','벌써','바로','이런','저런','어때요','근데','그래도','살아나겠','좋아하겠']);
+  const cnt={};
+  texts.join(' ').replace(/[^가-힣a-zA-Z0-9\s]/g,' ').split(/\s+/).forEach(w=>{
+    w=w.replace(/(입니다|했어요|하세요|이에요|예요|네요|었어요|아요|어요|해요|습니다|에서|에게|부터|까지|으로|하고|이랑|이|가|은|는|을|를|의|에|도|만)$/,'');
+    if(w.length<2||stop.has(w))return; cnt[w]=(cnt[w]||0)+1; });
+  return Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,36);
+}
+function renderVoice(){
+  renderCloudInto($('#cloud'), false);
+  const list=[...S.sugs].reverse().slice(0,30);
+  $('#sug-list').innerHTML = list.length?list.map(s=>
+    `<div class="sug">${esc(s.text)}<span class="who">${s.name?esc(s.name):'익명의 조합원'}</span></div>`).join('')
+    :'<div class="sug" style="color:var(--faint)">아직 도착한 한마디가 없어요.</div>';
+}
+function topPhrases(board,teamId,n){
+  const m=board&&board[teamId]; if(!m) return [];
+  return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,n);
+}
+function renderAdmin(){
+  if(!adminCode) return;
+  $('#adm-login-sec').hidden = true; $('#adm-panel').hidden = false;
+  const ph = currentPhase();
+  $('#adm-mode-label').textContent = S.mode==='auto'?'자동 진행 중':'수동 제어 중';
+  $('#adm-phases').innerHTML = S.phases.map(p=>
+    `<button class="pill ${ph&&ph.id===p.id?'on':''}" data-adm-phase="${p.id}">${p.time} ${esc(p.title)}</button>`).join('');
+  $('#adm-auto').classList.toggle('on', S.mode==='auto');
+  const stage=S.teams.filter(t=>t.kind==='stage'||t.kind==='perf').sort((a,b)=>(a.order??99)-(b.order??99));
+  $('#adm-pres').innerHTML = `<button class="pill ${!S.presenting?'on':''}" data-adm-pres="">없음</button>`+
+    stage.map(t=>`<button class="pill ${S.presenting===t.id?'on':''}" data-adm-pres="${t.id}">${esc(t.name)}</button>`).join('');
+  $('#adm-hearts').textContent = S.heartsClosed?'다시 열기':'마감하기';
+  $('#adm-hearts').classList.toggle('on', S.heartsClosed);
+}
+async function refreshDashboard(){
+  const r = await api({action:'admin',code:adminCode,op:'dashboard'});
+  if(!r.ok){ toast('현황을 불러오지 못했어요'); return; }
+  const d=r.data;
+  $('#adm-stats').innerHTML = [['참가자',d.users],['스탬프',d.stamps],['응원',d.cheers],['마음 보낸 이',d.heartsUsers],['한마디',d.sugs]]
+    .map(([l,v])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('');
+  $('#adm-board').innerHTML = '<span class="lbl">팀별 대표 문구 (많이 받은 순)</span>'+
+    S.teams.map(t=>{
+      const tp=topPhrases(d.board,t.id,2);
+      return `<div style="font-size:13px;padding:3px 0"><b>${esc(t.name)}</b> — ${tp.length?tp.map(([p,n])=>`${esc(p)} <span style="color:var(--gold)">×${n}</span>`).join(' · '):'<span style="color:var(--faint)">아직 없음</span>'}</div>`;
+    }).join('');
+}
+function renderScreen(){
+  const ph=currentPhase(); if(!ph) return;
+  $('#s-phase').textContent = ph.title;
+  $('#s-todo').textContent = ph.todo;
+  $('#s-notice').hidden = !S.notice;
+  if(S.notice) $('#s-notice').textContent = '📢 '+S.notice;
+  if(S.heartsClosed && S.board){
+    $('#s-cloud').hidden=true; const aw=$('#s-award'); aw.hidden=false;
+    aw.innerHTML = `<div style="font-size:2.4vh;color:#9DBE8F;margin-bottom:1vh">🏆 참가자들이 보낸 마음이 상이 되었습니다</div>`+
+      S.teams.filter(t=>topPhrases(S.board,t.id,1).length)
+        .map(t=>{ const [p]=topPhrases(S.board,t.id,1);
+          return `<div class="aw">${esc(t.name)} · <b>“${esc(p[0])}”상</b></div>`; }).join('');
+  }else{
+    $('#s-award').hidden=true; $('#s-cloud').hidden=false;
+    renderCloudInto($('#s-cloud'), true);
+  }
+}
+function renderAll(){
+  if(!S) return;
+  if(document.body.classList.contains('screen-mode')){ renderScreen(); return; }
+  renderHome();
+  if(curTab==='stamp') renderStamp();
+  if(curTab==='teams') renderTeams();
+  if(curTab==='voice') renderVoice();
+  if(curTab==='admin') renderAdmin();
+}
+
+/* ═════════ 액션 ═════════ */
+function needName(){ if(ME.name) return false; $('#onboard').hidden=false; return true; }
+function switchTab(t){
+  curTab=t; openTeam = t==='teams'?openTeam:null;
+  ['home','stamp','teams','voice','admin'].forEach(x=>$('#tab-'+x).hidden = x!==t);
+  $$('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===t));
+  renderAll(); window.scrollTo({top:0});
+}
+document.addEventListener('click', async e=>{
+  const el = e.target.closest('button'); if(!el) return;
+  if(el.dataset.tab) return switchTab(el.dataset.tab);
+  if(el.dataset.go) return switchTab(el.dataset.go);
+  if(el.id==='btn-gear') return switchTab('admin');
+  if(el.id==='btn-ob'){
+    const n=$('#ob-name').value.trim(); if(!n) return toast('이름이나 별명을 알려주세요');
+    ME.name=n; ls('name',n); $('#onboard').hidden=true;
+    await api({action:'register',uid:ME.uid,name:n});
+    toast(n+' 선생님, 환영해요! 🌱'); return;
+  }
+  if(el.id==='presenting'){ if(S.presenting){ switchTab('teams'); openTeam=S.presenting; renderTeams();
+    const c=$('#tm-'+S.presenting); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); } return; }
+  if(el.id==='btn-code'){
+    if(needName()) return;
+    const v=$('#code-in').value.trim();
+    if(!/^\d{4}$/.test(v)) return toast('4자리 숫자를 입력해주세요');
+    el.disabled=true;
+    const r=await api({action:'stamp',uid:ME.uid,name:ME.name,code:v}); el.disabled=false;
+    $('#code-in').value='';
+    if(r.ok){ toast('🌱 '+r.team+' 도장 완료!'); await fetchState(); renderAll(); }
+    else toast(r.err==='dup'?'이미 받은 도장이에요 ('+(r.team||'')+')':(r.err==='wrong'?'코드를 다시 확인해주세요':'전송에 실패했어요'));
+    return;
+  }
+  if(el.dataset.open!==undefined){ openTeam = openTeam===el.dataset.open?null:el.dataset.open; renderTeams(); return; }
+  if(el.dataset.chip){
+    if(needName()) return;
+    if(S.heartsClosed) return toast('마음 보내기가 마감됐어요');
+    const team=el.dataset.team, chip=el.dataset.chip;
+    const mine=[...((S.me.hearts||{})[team]||[])];
+    const i=mine.indexOf(chip);
+    if(i>=0) mine.splice(i,1);
+    else{ if(mine.length>=CONFIG.MAX_CHIPS_PER_TEAM) return toast('한 팀에는 최대 '+CONFIG.MAX_CHIPS_PER_TEAM+'개까지 보낼 수 있어요');
+      mine.push(chip); }
+    S.me.hearts=S.me.hearts||{}; S.me.hearts[team]=mine; renderTeams();
+    const r=await api({action:'hearts',uid:ME.uid,name:ME.name,team,phrases:mine});
+    if(r.ok){ if(i<0) toast('💛 마음이 전해졌어요'); } else toast('전송에 실패했어요');
+    return;
+  }
+  if(el.dataset.cheerBtn){
+    if(needName()) return;
+    const team=el.dataset.cheerBtn, inp=$(`[data-cheer-in="${team}"]`);
+    const txt=inp.value.trim(); if(!txt) return;
+    inp.value='';
+    S.cheers.push({team,name:ME.name,text:txt}); renderTeams();
+    const r=await api({action:'cheer',uid:ME.uid,name:ME.name,team,text:txt});
+    if(r.ok) toast('📣 응원이 도착했어요'); else toast('전송에 실패했어요');
+    return;
+  }
+  if(el.id==='btn-sug'){
+    if(needName()) return;
+    const txt=$('#sug-in').value.trim(); if(!txt) return toast('내용을 입력해주세요');
+    const anon=$('#sug-anon').checked;
+    $('#sug-in').value='';
+    S.sugs.push({name:anon?'':ME.name,text:txt}); renderVoice();
+    const r=await api({action:'suggest',uid:ME.uid,name:ME.name,text:txt,anon});
+    if(r.ok) toast(anon?'익명으로 전달했어요':'소중한 한마디, 고마워요'); else toast('전송에 실패했어요');
+    return;
+  }
+  if(el.id==='btn-refresh-cloud'){ await fetchState(); renderVoice(); toast('새로고침 완료'); return; }
+  /* ── 운영자 ── */
+  if(el.id==='btn-adm-login'){
+    const c=$('#adm-code').value.trim(); if(!c) return;
+    const r=await api({action:'admin',code:c,op:'ping'});
+    if(r.ok){ adminCode=c; ls('admCode',c); $('#tab-btn-admin').hidden=false;
+      renderAdmin(); refreshDashboard(); toast('운영자 모드 ON — 하단에 운영 탭이 생겼어요'); }
+    else toast('코드가 맞지 않아요'); return;
+  }
+  if(el.id==='btn-adm-logout'){
+    adminCode=''; ls('admCode','');
+    $('#tab-btn-admin').hidden=true;
+    $('#adm-login-sec').hidden=false; $('#adm-panel').hidden=true; $('#adm-code').value='';
+    switchTab('home'); toast('운영자 모드를 껐어요'); return;
+  }
+  if(el.dataset.admPhase!==undefined){
+    await api({action:'admin',code:adminCode,op:'phase',value:el.dataset.admPhase});
+    await fetchState(); renderAll(); toast('단계를 전환했어요 (수동 모드)'); return;
+  }
+  if(el.id==='adm-auto'){
+    await api({action:'admin',code:adminCode,op:'phase',value:'auto'});
+    await fetchState(); renderAll(); toast('시간표 자동 진행으로 전환'); return;
+  }
+  if(el.dataset.admPres!==undefined){
+    await api({action:'admin',code:adminCode,op:'presenting',value:el.dataset.admPres});
+    await fetchState(); renderAll(); return;
+  }
+  if(el.id==='btn-adm-notice'){
+    await api({action:'admin',code:adminCode,op:'notice',value:$('#adm-notice').value.trim()});
+    await fetchState(); renderAll(); toast('공지를 게시했어요'); return;
+  }
+  if(el.id==='btn-adm-notice-clear'){
+    $('#adm-notice').value='';
+    await api({action:'admin',code:adminCode,op:'notice',value:''});
+    await fetchState(); renderAll(); toast('공지를 내렸어요'); return;
+  }
+  if(el.id==='adm-hearts'){
+    await api({action:'admin',code:adminCode,op:'hearts',value:!S.heartsClosed});
+    await fetchState(); renderAll(); refreshDashboard();
+    toast(S.heartsClosed?'마음 보내기를 마감했어요 — 대표 문구 확정!':'마음 보내기를 다시 열었어요'); return;
+  }
+  if(el.id==='btn-adm-refresh'){ refreshDashboard(); return; }
+  if(el.id==='btn-screen'){ location.hash='screen'; applyScreenMode(); return; }
+});
+$('#code-in')?.addEventListener('keydown',e=>{ if(e.key==='Enter') $('#btn-code').click(); });
+
+/* ═════════ 스크린 모드 ═════════ */
+function applyScreenMode(){
+  const on = location.hash==='#screen';
+  document.body.classList.toggle('screen-mode', on);
+  renderAll();
+}
+window.addEventListener('hashchange', applyScreenMode);
+
+/* ═════════ 시작 ═════════ */
+async function boot(){
+  if(DEMO){
+    $('#demo-ribbon').hidden=false;
+    const h=document.createElement('p'); h.className='hint';
+    h.textContent='데모용 부스 코드: 4821 · 7359 · 1647 · 9273 · 5068 · 3914 · 6482';
+    $('#tab-stamp .card:last-child').appendChild(h);
+  }
+  await fetchState();
+  applyScreenMode();
+  renderAll();
+  if(!ME.name && location.hash!=='#screen') $('#onboard').hidden=false;
+  else if(!DEMO) api({action:'register',uid:ME.uid,name:ME.name});
+  if(adminCode){
+    const r=await api({action:'admin',code:adminCode,op:'ping'});
+    if(r.ok) $('#tab-btn-admin').hidden=false;
+    else { adminCode=''; ls('admCode',''); }
+  }
+  setInterval(async ()=>{ await fetchState(); renderAll(); },
+    location.hash==='#screen'?8000:CONFIG.POLL_MS);
+  setInterval(()=>{ if(S&&!document.body.classList.contains('screen-mode')) renderHome(); }, 30000);
+}
+boot();
+</script>
+</body></html>
