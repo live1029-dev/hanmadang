@@ -220,9 +220,8 @@ h1,h2,h3{margin:0;font-weight:700}
 body.screen-mode{background:#131811;color:#F1EFE2}
 body.screen-mode #app,body.screen-mode .tabs{display:none}
 body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;padding:4vh 5vw;text-align:center}
-#screen .s-brand{font-family:'Gowun Dodum',sans-serif;font-size:3.2vh;color:#9DBE8F;letter-spacing:.2vh}
-#screen .s-phase{font-family:'Gowun Dodum',sans-serif;font-size:6.4vh;margin-top:1.4vh}
-#screen .s-todo{font-size:2.6vh;color:#C9CBB6;margin-top:.8vh}
+#screen .s-brand{font-family:'Gowun Dodum',sans-serif;font-size:5.6vh;color:#9DBE8F;letter-spacing:.3vh}
+#screen .s-todo{font-size:2.8vh;color:#C9CBB6;margin-top:1.6vh}
 #screen .s-notice{margin:2vh auto 0;background:#3D3417;color:#FFD98A;border-radius:99px;
   padding:1.2vh 3vh;font-size:2.4vh;max-width:90%}
 #screen .s-cloud{flex:1;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;
@@ -392,12 +391,10 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
 <!-- ══ 스크린 모드 ══ -->
 <div id="screen">
   <div class="s-brand">2026 참실한마당</div>
-  <div class="s-phase" id="s-phase"></div>
-  <div class="s-todo" id="s-todo"></div>
+  <div class="s-todo">응원 메시지와 한마디가 실시간으로 모여 이 화면을 채웁니다</div>
   <div class="s-notice" id="s-notice" hidden></div>
   <div class="s-cloud" id="s-cloud"></div>
   <div class="s-award" id="s-award" hidden></div>
-  <div class="s-foot">응원 메시지와 한마디가 실시간으로 모여 이 화면을 채웁니다</div>
 </div>
 
 <!-- ══ 온보딩 ══ -->
@@ -742,9 +739,6 @@ async function refreshDashboard(){
     }).join('');
 }
 function renderScreen(){
-  const ph=currentPhase(); if(!ph) return;
-  $('#s-phase').textContent = ph.title;
-  $('#s-todo').textContent = ph.todo;
   $('#s-notice').hidden = !S.notice;
   if(S.notice) $('#s-notice').textContent = '📢 '+S.notice;
   if(S.heartsClosed && S.board){
