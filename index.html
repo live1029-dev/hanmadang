@@ -253,9 +253,6 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
       <div class="now"><span>✨ 지금은</span></div>
       <div class="phz"><span class="pe" id="phase-emoji">✨</span><h2 id="phase-title">…</h2></div>
       <div class="todo" id="phase-todo"></div>
-      <button class="live" id="presenting" hidden>
-        <span class="dot"></span><span id="presenting-txt"></span>
-      </button>
     </section>
 
     <div class="act">
@@ -268,11 +265,6 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
     <section class="sec">
       <div class="st"><h3>오늘의 흐름</h3></div>
       <div class="card tt" id="timetable"></div>
-    </section>
-
-    <section class="sec">
-      <div class="st"><h3>발표·공연 순서</h3></div>
-      <div class="card tt" id="stagelist"></div>
     </section>
   </main>
 
@@ -338,7 +330,6 @@ body.screen-mode #screen{display:flex;flex-direction:column;min-height:100vh;pad
           <div class="row"><span class="lbl">현재 단계 (누르면 즉시 전환 · 수동 모드로 변경됨)</span><div id="adm-phases" style="display:flex;gap:7px;flex-wrap:wrap"></div></div>
           <div class="row"><span class="lbl">모드</span>
             <button class="pill" id="adm-auto">⏱ 시간표대로 자동 진행</button></div>
-          <div class="row"><span class="lbl">지금 발표 중인 팀</span><div id="adm-pres" style="display:flex;gap:7px;flex-wrap:wrap"></div></div>
         </div>
       </section>
       <section class="sec">
@@ -617,19 +608,10 @@ function renderHome(){
   $('#phase-emoji').textContent = PHASE_EMOJI[ph.id]||'✨';
   $('#phase-todo').textContent = ph.todo;
   const d = now(); $('#clock').textContent = pad2(d.getHours())+':'+pad2(d.getMinutes());
-  const pres = S.presenting && teamById(S.presenting);
-  $('#presenting').hidden = !pres;
-  if(pres) $('#presenting-txt').textContent = '지금 무대: '+pres.name+' — 응원 보내기';
-  const m = nowMin(); const curId = ph.id;
+  const curId = ph.id;
   $('#timetable').innerHTML = S.phases.map(p=>{
     const cls = p.id===curId?'on':(toMin(p.time)<toMin(ph.time)?'past':'');
     return `<div class="row ${cls}"><span class="t">${p.time}</span><span class="n">${esc(p.title)}</span></div>`;
-  }).join('');
-  const stage = S.teams.filter(t=>t.kind==='stage'||t.kind==='perf').sort((a,b)=>(a.order??99)-(b.order??99));
-  $('#stagelist').innerHTML = stage.map(t=>{
-    const on = S.presenting===t.id;
-    return `<div class="row ${on?'on':''}"><span class="t">${t.kind==='perf'?'공연':(t.order+'번')}</span>
-      <span class="n">${iconOf(t)} ${esc(t.name)}${on?' ▶':''}</span></div>`;
   }).join('');
   $('#notice').hidden = !S.notice;
   if(S.notice) $('#notice').textContent = S.notice;
@@ -720,9 +702,6 @@ function renderAdmin(){
   $('#adm-phases').innerHTML = S.phases.map(p=>
     `<button class="pill ${ph&&ph.id===p.id?'on':''}" data-adm-phase="${p.id}">${p.time} ${esc(p.title)}</button>`).join('');
   $('#adm-auto').classList.toggle('on', S.mode==='auto');
-  const stage=S.teams.filter(t=>t.kind==='stage'||t.kind==='perf').sort((a,b)=>(a.order??99)-(b.order??99));
-  $('#adm-pres').innerHTML = `<button class="pill ${!S.presenting?'on':''}" data-adm-pres="">없음</button>`+
-    stage.map(t=>`<button class="pill ${S.presenting===t.id?'on':''}" data-adm-pres="${t.id}">${esc(t.name)}</button>`).join('');
   $('#adm-hearts').textContent = S.heartsClosed?'다시 열기':'마감하기';
   $('#adm-hearts').classList.toggle('on', S.heartsClosed);
 }
@@ -805,8 +784,6 @@ document.addEventListener('click', async e=>{
   }
   if(el.id==='btn-w-ok'){ ls(wHash(welcomeData()),'1'); $('#welcome').hidden=true; return; }
   if(el.id==='btn-welcome'){ showWelcome(true); return; }
-  if(el.id==='presenting'){ if(S.presenting){ switchTab('teams'); openTeam=S.presenting; renderTeams();
-    const c=$('#tm-'+S.presenting); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); } return; }
   if(el.id==='btn-code'){
     if(needName()) return;
     const v=$('#code-in').value.trim();
@@ -875,10 +852,6 @@ document.addEventListener('click', async e=>{
   if(el.id==='adm-auto'){
     await api({action:'admin',code:adminCode,op:'phase',value:'auto'});
     await fetchState(); renderAll(); toast('시간표 자동 진행으로 전환'); return;
-  }
-  if(el.dataset.admPres!==undefined){
-    await api({action:'admin',code:adminCode,op:'presenting',value:el.dataset.admPres});
-    await fetchState(); renderAll(); return;
   }
   if(el.id==='btn-adm-notice'){
     await api({action:'admin',code:adminCode,op:'notice',value:$('#adm-notice').value.trim()});
