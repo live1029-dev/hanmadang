@@ -531,8 +531,8 @@ const DEMO_DB = {
 /* ═════════ API ═════════ */
 function demoState(){
   const my = { stamps: DEMO_DB.stamps[ME.uid]||[], hearts: DEMO_DB.hearts[ME.uid]||{} };
-  return JSON.parse(JSON.stringify({ ...DEMO_DB, code:undefined,
-    teams: DEMO_DB.teams.map(({code,...t})=>t), me:my, board: boardFrom(DEMO_DB.hearts) }));
+  return JSON.parse(JSON.stringify({ ...DEMO_DB,
+    teams: DEMO_DB.teams, me:my, board: boardFrom(DEMO_DB.hearts) }));
 }
 function boardFrom(hearts){
   const b={}; Object.values(hearts).forEach(m=>Object.entries(m).forEach(([t,ps])=>{
@@ -583,6 +583,19 @@ async function fetchState(){
   }catch(e){ /* 다음 폴링에서 재시도 */ }
 }
 
+/* ═════════ 스탬프: 즉시 반영 + 백그라운드 동기화 ═════════ */
+function localStamps(){ try{ return JSON.parse(ls('myStamps')||'[]'); }catch(e){ return []; } }
+function addLocalStamp(id){ const a=localStamps(); if(!a.includes(id)){ a.push(id); ls('myStamps',JSON.stringify(a)); } }
+function myStamps(){ const sv=(S&&S.me&&S.me.stamps)||[]; return [...new Set([...sv, ...localStamps()])]; }
+function syncStamps(){ // 서버에 아직 기록 안 된 도장을 재전송, 기록된 것은 정리
+  if(DEMO||!S||!S.me) return;
+  const sv=new Set(S.me.stamps||[]);
+  const pending=localStamps().filter(id=>!sv.has(id));
+  ls('myStamps', JSON.stringify(pending));
+  pending.forEach(id=>{ const t=S.teams.find(x=>x.id===id);
+    if(t&&t.code) api({action:'stamp',uid:ME.uid,name:ME.name,code:String(t.code)}); });
+}
+
 /* ═════════ 단계 계산 ═════════ */
 function currentPhase(){
   if(!S) return null;
@@ -619,7 +632,7 @@ function renderHome(){
 }
 function renderStamp(){
   const booths = S.teams.filter(t=>t.kind==='booth');
-  const got = S.me.stamps||[];
+  const got = myStamps();
   $('#stamp-total').textContent = booths.length;
   $('#stamp-cnt').textContent = got.length;
   const lines=['부스 팻말의 4자리 코드를 입력하면 도장이 쾅!','한 곳 한 곳이 소모임의 1년이에요.',
@@ -790,6 +803,19 @@ document.addEventListener('click', async e=>{
     if(!S) return toast('연결 중이에요, 잠시만요');
     const v=$('#code-in').value.trim();
     if(!/^\d{4}$/.test(v)) return toast('4자리 숫자를 입력해주세요');
+    const hasCodes = S.teams.some(t=>t.code);
+    if(hasCodes){
+      /* 즉시 도장: 코드 검증을 폰에서 바로 처리 */
+      const team = S.teams.find(t=>String(t.code||'')===v);
+      if(!team) return toast('코드를 다시 확인해주세요');
+      $('#code-in').value='';
+      if(myStamps().includes(team.id)) return toast('이미 받은 도장이에요 ('+team.name+')');
+      addLocalStamp(team.id); renderStamp();
+      toast('🌱 '+team.name+' 도장 완료!');
+      api({action:'stamp',uid:ME.uid,name:ME.name,code:v}); /* 백그라운드 기록 */
+      return;
+    }
+    /* (구버전 서버 호환) 서버 확인 방식 */
     el.disabled=true;
     const r=await api({action:'stamp',uid:ME.uid,name:ME.name,code:v}); el.disabled=false;
     $('#code-in').value='';
@@ -914,7 +940,7 @@ async function boot(){
   /* 3) 폴링: 화면이 꺼져 있거나 다른 앱에 가 있으면 쉬고, 돌아오면 즉시 갱신 */
   setInterval(async ()=>{
     if(document.hidden) return;
-    await fetchState(); renderAll();
+    await fetchState(); syncStamps(); renderAll();
   }, location.hash==='#screen'?8000:CONFIG.POLL_MS);
   document.addEventListener('visibilitychange', async ()=>{
     if(!document.hidden){ await fetchState(); renderAll(); }
