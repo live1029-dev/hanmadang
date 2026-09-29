@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>2026 참실한마당</title></head><body>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><title>2026 참실한마당</title></head><body>
 <title>2026 참실한마당</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
@@ -578,7 +578,8 @@ async function fetchState(){
   if(DEMO){ S = demoState(); return; }
   try{
     const r = await fetch(CONFIG.API_URL+'?action=state&uid='+encodeURIComponent(ME.uid));
-    const j = await r.json(); if(j.ok) S = j.data;
+    const j = await r.json();
+    if(j.ok){ S = j.data; try{ localStorage.setItem('stateCache', JSON.stringify(S)); }catch(e){} }
   }catch(e){ /* 다음 폴링에서 재시도 */ }
 }
 
@@ -786,6 +787,7 @@ document.addEventListener('click', async e=>{
   if(el.id==='btn-welcome'){ showWelcome(true); return; }
   if(el.id==='btn-code'){
     if(needName()) return;
+    if(!S) return toast('연결 중이에요, 잠시만요');
     const v=$('#code-in').value.trim();
     if(!/^\d{4}$/.test(v)) return toast('4자리 숫자를 입력해주세요');
     el.disabled=true;
@@ -798,6 +800,7 @@ document.addEventListener('click', async e=>{
   if(el.dataset.open!==undefined){ openTeam = openTeam===el.dataset.open?null:el.dataset.open; renderTeams(); return; }
   if(el.dataset.chip){
     if(needName()) return;
+    if(!S) return toast('연결 중이에요, 잠시만요');
     if(S.heartsClosed) return toast('마음 보내기가 마감됐어요');
     const team=el.dataset.team, chip=el.dataset.chip;
     const mine=[...((S.me.hearts||{})[team]||[])];
@@ -812,6 +815,7 @@ document.addEventListener('click', async e=>{
   }
   if(el.dataset.cheerBtn){
     if(needName()) return;
+    if(!S) return toast('연결 중이에요, 잠시만요');
     const team=el.dataset.cheerBtn, inp=$(`[data-cheer-in="${team}"]`);
     const txt=inp.value.trim(); if(!txt) return;
     inp.value='';
@@ -822,6 +826,7 @@ document.addEventListener('click', async e=>{
   }
   if(el.id==='btn-sug'){
     if(needName()) return;
+    if(!S) return toast('연결 중이에요, 잠시만요');
     const txt=$('#sug-in').value.trim(); if(!txt) return toast('내용을 입력해주세요');
     const anon=$('#sug-anon').checked;
     $('#sug-in').value='';
@@ -888,8 +893,15 @@ async function boot(){
     h.textContent='데모용 부스 코드: 4821 · 7359 · 1647 · 9273 · 5068 · 3914 · 6482';
     $('#tab-stamp .card:last-child').appendChild(h);
   }
-  await fetchState();
+  /* 1) 지난 방문 때 저장해둔 상태로 즉시 그리기 (체감 속도 ↑) */
+  if(!DEMO){
+    try{ const c=localStorage.getItem('stateCache'); if(c) S=JSON.parse(c); }catch(e){}
+  }
   applyScreenMode();
+  if(S) renderAll();
+  else if(!DEMO) $('#phase-title').textContent='불러오는 중…';
+  /* 2) 최신 상태를 백그라운드로 받아와 갱신 */
+  await fetchState();
   renderAll();
   if(!ME.name && location.hash!=='#screen') $('#onboard').hidden=false;
   else if(!DEMO){ api({action:'register',uid:ME.uid,name:ME.name}); showWelcome(false); }
@@ -899,9 +911,15 @@ async function boot(){
     if(r.ok) $('#tab-btn-admin').hidden=false;
     else { adminCode=''; ls('admCode',''); }
   }
-  setInterval(async ()=>{ await fetchState(); renderAll(); },
-    location.hash==='#screen'?8000:CONFIG.POLL_MS);
-  setInterval(()=>{ if(S&&!document.body.classList.contains('screen-mode')) renderHome(); }, 30000);
+  /* 3) 폴링: 화면이 꺼져 있거나 다른 앱에 가 있으면 쉬고, 돌아오면 즉시 갱신 */
+  setInterval(async ()=>{
+    if(document.hidden) return;
+    await fetchState(); renderAll();
+  }, location.hash==='#screen'?8000:CONFIG.POLL_MS);
+  document.addEventListener('visibilitychange', async ()=>{
+    if(!document.hidden){ await fetchState(); renderAll(); }
+  });
+  setInterval(()=>{ if(S&&!document.hidden&&!document.body.classList.contains('screen-mode')) renderHome(); }, 30000);
 }
 boot();
 </script>
