@@ -463,7 +463,7 @@ const DEMO_DB = {
   phases:[
     {id:'p0',time:'16:50',title:'입장·접수',todo:'환영합니다! 이름을 등록하고 편한 자리에 앉아주세요.'},
     {id:'p1',time:'17:10',title:'뷔페 식사',todo:'비건 뷔페가 열렸어요. 든든하게 식사부터 하세요!'},
-    {id:'p2',time:'17:30',title:'부스타임',todo:'부스 7곳을 돌며 코드를 입력해 보세요. 응원 한마디와 마음 보내기도 잊지 마세요.'},
+    {id:'p2',time:'17:30',title:'부스타임',todo:'부스 8곳을 돌며 코드를 입력해 보세요. 응원 한마디와 마음 보내기도 잊지 마세요.'},
     {id:'p3',time:'17:55',title:'착석',todo:'음료만 들고 자리로! 곧 공연이 시작됩니다.'},
     {id:'p4',time:'18:00',title:'윤슬 국악 공연',todo:'윤슬의 국악 공연을 함께 즐겨요 🎵'},
     {id:'p5',time:'18:10',title:'소모임 발표',todo:'지금 발표 중인 팀에게 응원을 보내보세요.'},
@@ -484,10 +484,10 @@ const DEMO_DB = {
     {id:'s3',name:'한밭역사',leader:'박건형',kind:'stage',icon:'🏛️',intro:'',order:2},
     {id:'s4',name:'참뫼',leader:'송치수',kind:'stage',icon:'⛰️',intro:'',order:3},
     {id:'s5',name:'대세페미',leader:'유소현',kind:'stage',icon:'💜',intro:'',order:4},
-    {id:'s6',name:'슬기복용',leader:'이재준',kind:'stage',icon:'💊',intro:'',order:5},
-    {id:'s7',name:'삼인행',leader:'최성은',kind:'stage',icon:'👣',intro:'',order:6},
-    {id:'s8',name:'바이브코딩',leader:'김효정',kind:'stage',icon:'💻',intro:'',order:7},
-    {id:'s9',name:'6학년',leader:'백혜진',kind:'stage',icon:'✏️',intro:'',order:8},
+    {id:'s6',name:'슬기복용',leader:'이재준',kind:'booth',icon:'🍪',intro:'',loc:'입구 8번 부스',code:'2735'},
+    {id:'s7',name:'삼인행',leader:'최성은',kind:'stage',icon:'👣',intro:'',order:5},
+    {id:'s8',name:'바이브코딩',leader:'김효정',kind:'stage',icon:'💻',intro:'',order:6},
+    {id:'s9',name:'6학년',leader:'백혜진',kind:'stage',icon:'✏️',intro:'',order:7},
     {id:'u1',name:'유치원',leader:'김보경',kind:'tbd',icon:'🧸',intro:''},
     {id:'u2',name:'열광',leader:'김현희',kind:'tbd',icon:'🔥',intro:''},
     {id:'u3',name:'세잎도란',leader:'김효정',kind:'tbd',icon:'🍀',intro:''},
@@ -757,7 +757,7 @@ function renderAll(){
 
 /* ═════════ 첫 안내 팝업 ═════════ */
 const DEF_WTITLE = '이렇게 즐기시면 돼요!';
-const DEF_WLINES = '🍽️ 17:10부터 뷔페에서 저녁 식사를 하세요|🧺 식사 후엔 부스 7곳을 돌며 스탬프를 모아요|💛 마음에 남는 소모임에 응원과 마음을 보내요|🪑 17:55엔 자리에 앉아 공연과 발표를 즐겨요';
+const DEF_WLINES = '🍽️ 17:10부터 뷔페에서 저녁 식사를 하세요|🧺 식사 후엔 부스 8곳을 돌며 스탬프를 모아요|💛 마음에 남는 소모임에 응원과 마음을 보내요|🪑 17:55엔 자리에 앉아 공연과 발표를 즐겨요';
 function welcomeData(){
   return {
     title: (S && S.welcomeTitle) || DEF_WTITLE,
@@ -916,7 +916,7 @@ async function boot(){
   if(DEMO){
     $('#demo-ribbon').hidden=false;
     const h=document.createElement('p'); h.className='hint';
-    h.textContent='데모용 부스 코드: 4821 · 7359 · 1647 · 9273 · 5068 · 3914 · 6482';
+    h.textContent='데모용 부스 코드: 4821 · 7359 · 1647 · 9273 · 5068 · 3914 · 6482 · 2735';
     $('#tab-stamp .card:last-child').appendChild(h);
   }
   /* 1) 지난 방문 때 저장해둔 상태로 즉시 그리기 (체감 속도 ↑) */
